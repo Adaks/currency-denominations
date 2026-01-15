@@ -122,3 +122,86 @@ export function getLowestCoin(currencyCode: CurrencyCode): number | null {
   const coins = getCoins(currencyCode);
   return coins.length > 0 ? Math.min(...coins) : null;
 }
+
+
+// ===== WRITE / UPDATE APIs =====
+/**
+ * Add or update denominations for a currency
+ * @param currencyCode - Three-letter currency code
+ * @param notes - Array of banknote values
+ * @param coins - Array of coin values
+ */
+export function upsertDenominations(
+  currencyCode: CurrencyCode,
+  notes: number[] = [],
+  coins: number[] = []
+): boolean {
+  if (!currencyCode || typeof currencyCode !== 'string') {
+    return false;
+  }
+
+  const code = currencyCode.trim().toUpperCase();
+
+  currencyDenominations[code] = {
+    notes: [...new Set(notes)].sort((a, b) => a - b),
+    coins: [...new Set(coins)].sort((a, b) => a - b),
+  };
+
+  return true;
+}
+
+
+export function updateNotes(
+  currencyCode: CurrencyCode,
+  notes: number[]
+): boolean {
+  const denomination = getDenominations(currencyCode);
+  if (!denomination) return false;
+
+  denomination.notes = [...new Set(notes)].sort((a, b) => a - b);
+  return true;
+}
+
+
+export function updateCoins(
+  currencyCode: CurrencyCode,
+  coins: number[]
+): boolean {
+  const denomination = getDenominations(currencyCode);
+  if (!denomination) return false;
+
+  denomination.coins = [...new Set(coins)].sort((a, b) => a - b);
+  return true;
+}
+
+export function addNote(currencyCode: CurrencyCode, value: number): boolean {
+  const denomination = getDenominations(currencyCode);
+  if (!denomination) return false;
+
+  if (!denomination.notes.includes(value)) {
+    denomination.notes.push(value);
+    denomination.notes.sort((a, b) => a - b);
+  }
+  return true;
+}
+
+
+export function addCoin(currencyCode: CurrencyCode, value: number): boolean {
+  const denomination = getDenominations(currencyCode);
+  if (!denomination) return false;
+
+  if (!denomination.coins.includes(value)) {
+    denomination.coins.push(value);
+    denomination.coins.sort((a, b) => a - b);
+  }
+  return true;
+}
+
+
+export function removeCurrency(currencyCode: CurrencyCode): boolean {
+  const code = currencyCode.trim().toUpperCase();
+  if (!(code in currencyDenominations)) return false;
+
+  delete currencyDenominations[code];
+  return true;
+}
