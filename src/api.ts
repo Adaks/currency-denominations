@@ -60,8 +60,7 @@ export function hasDenominations(currencyCode: CurrencyCode): boolean {
  * @returns The complete currency denominations object
  */
 export function getAllDenominations(): CurrencyDenominations {
-  return { ...currencyDenominations };
-}
+  return JSON.parse(JSON.stringify(currencyDenominations));}
 
 /**
  * Get currencies that have banknotes
