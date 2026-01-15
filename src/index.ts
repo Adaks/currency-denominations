@@ -17,5 +17,11 @@ export {
   getHighestNote,
   getLowestNote,
   getHighestCoin,
-  getLowestCoin
+  getLowestCoin,
+  upsertDenominations,
+  updateNotes,
+  updateCoins,
+  addNote,
+  addCoin,
+  removeCurrency
 } from './api';
